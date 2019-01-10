@@ -6,10 +6,13 @@ C++ 14 compile time and stack based bit library... </br>
   3. Provides a complete set of bitwise procedural routines </br>
   4. 'Bits' class allows extreme manipulation and fine tuning of integral types in the bit form </br>
   5. Everything is included in the header files. No extra linking needed. </br>
-  6. Does not rely on the STL and with a little modification can not rely on the Standard Library at all
-  7. Variadic templates allow bit building and inserting at compile time.
-  8. The class and functions are type safe and require explicit casting to change types
+  6. Does not rely on the STL and with a little modification can not rely on the Standard Library at all. </br>
+  7. Variadic templates allow bit building and inserting at compile time.</br>
+  8. The class and functions are type safe and require explicit casting to change types</br>
   
+</br>
+</br>
+
 </h4>Ideas: </h4></br></br>
 <p>
   I wanted to do some bit manipulation and learn some more C++ so I simply set out on my journey. The library has not been
@@ -20,13 +23,14 @@ C++ 14 compile time and stack based bit library... </br>
   In total size the library does not penalize you for what you don't use. Templates are only generated for the code that is   used. The function and 'Bits' class will only be generated if used in the code. The rest of the code will be left out of the 
   final executable.
 </p>
-
+</br></br>
 
 <h4>Thoughts:</h4> <br><br>
 <p>
 'little-bit' is my first library attempt, and I know its a bit daunting especially in C++ but I wanted to try it.
- I would appreciate any help or comments given to help me improve my library or 'attempt' at it. Any ideas or requests?
+ I would appreciate any help or comments given to help me improve my library or 'attempt' at it. Any ideas or requests? Let me     know!
 </p>  
+</br></br>
 
  Email me @ bailey.kocin@gmail.com
 
