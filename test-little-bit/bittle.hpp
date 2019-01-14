@@ -6,8 +6,8 @@
  */
 
 
-#ifndef BITTLE_HPP
-#define BITTLE_HPP
+#ifndef BITTLE_TEST_HPP
+#define BITTLE_TEST_HPP
 
 
 
