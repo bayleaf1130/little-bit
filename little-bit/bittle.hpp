@@ -11,16 +11,22 @@
 
 
 
-
+#ifdef BITTLE_STANDARD
 #include <iostream>
 #include <string>
-#include <cstdint>
+#include <iomanip>
 #include <utility>
+#endif
+
+// Must include
+#include <cstdint>
 #include <type_traits>
 #include <functional>
-#include <iomanip>
 
 
+
+ /* If the BITTLE_STANDARD MACRO IS NOT DEFINED THEN STREAMS AND STRING
+  * will be excluded */
 
 namespace bittle {
 
@@ -40,9 +46,9 @@ namespace bittle {
 
 static constexpr int BIT_SIZE = 8;
 
-/* reverse_bits
- * reverse number 'n's bits
- * return a new value
+/* name: reverse_bits
+ * desc: everse number 'n's bits
+ * returns: a new value
  */
 template<typename T = uint64_t>
 constexpr T reverse_bits(const T& n) noexcept
@@ -56,9 +62,9 @@ constexpr T reverse_bits(const T& n) noexcept
 	return ret;
 }
 
-/* count_ones
- * count number of set bits in 'n'
- * return set bit count
+/* name: count_ones
+ * desc: count number of set bits in 'n'
+ * returns: set bit count
  */
 template<typename T = uint64_t>
 constexpr uint32_t count_ones(const T& n) noexcept
@@ -73,9 +79,9 @@ constexpr uint32_t count_ones(const T& n) noexcept
 }
 
 
-/* count_zeroes
- * count number of not set bits in 'n'
- * return not set bit count
+/* name: count_zeroes
+ * desc: count number of not set bits in 'n'
+ * returns: not set bit count
  */
 template<typename T = uint64_t>
 constexpr uint32_t count_zeroes(const T& n) noexcept
@@ -89,9 +95,9 @@ constexpr uint32_t count_zeroes(const T& n) noexcept
 	return cnt;
 }
 
-/* reverse_bytes
- * reverse bytes (size 8)
- * return reversed number
+/* name: reverse_bytes
+ * desc: reverse bytes (size 8)
+ * returns: reversed number
  */
 template<typename T = uint64_t>
 constexpr T reverse_bytes(const T& n) noexcept
@@ -106,9 +112,9 @@ constexpr T reverse_bytes(const T& n) noexcept
 }
 
 
-/* check_bit
- * checks if bit targ in n is set
- * returns 1 or 0
+/* name: check_bit
+ * desc: checks if bit targ in n is set
+ * returns: 1 or 0
  */
 template <typename T = uint64_t>
 constexpr T check_bit(const T& n, int8_t targ) noexcept
@@ -119,22 +125,22 @@ constexpr T check_bit(const T& n, int8_t targ) noexcept
   return n >> ((targ - 1) & 1);
 }
 
-/* set_bit
- * sets bit targ in n
- * returns new number
+/* name: set_bit
+ * desc: sets bit targ in n
+ * returns: new number
  */
 template <typename T = uint64_t>
 constexpr T set_bit(const T& n, int8_t targ) noexcept
 {
   if (targ < 1 || targ > sizeof(n) * BIT_SIZE)
 	return n;
-    
+
    return n | (1 << (targ - 1));
 }
 
-/* toggle_bit
- * toggles bit on and off using xor (^)
- * returns toggled number
+/* name: toggle_bit
+ * desc: toggles bit on and off using xor (^)
+ * returns: toggled number
  */
 template <typename T = uint64_t>
 constexpr T toggle_bit(const T n, int8_t targ) noexcept
@@ -146,9 +152,9 @@ constexpr T toggle_bit(const T n, int8_t targ) noexcept
   return n ^ (1 << (targ - 1));
 }
 
-/* clear_bit
- * clears a bit targ in n
- * returns new number
+/* name: clear_bit
+ * desc: clears a bit targ in n
+ * returns: new number
  */
 template <typename T = uint64_t>
 constexpr T clear_bit(const T& n, int8_t targ) noexcept
@@ -159,9 +165,9 @@ constexpr T clear_bit(const T& n, int8_t targ) noexcept
    return n & (~(1 << (targ - 1)));
 }
 
-/* flip_bit
- * flips the bit in n at targ
- * returns the modified number
+/* name: flip_bit
+ * desc: flips the bit in n at targ
+ * returns: the modified number
  */
  template<typename T = uint64_t>
  constexpr T flip_bit(const T& n, int8_t targ) noexcept
@@ -174,10 +180,10 @@ constexpr T clear_bit(const T& n, int8_t targ) noexcept
 
 
 
-/* hamming_distance
- * Find the number of different bits between
+/* name: hamming_distance
+ * desc: Find the number of different bits between
  * two fixed size numbers
- * returns the difference
+ * returns: the difference
  */
 template <typename T = uint64_t>
 constexpr int hamming_distance(const T& x, const T& y) noexcept
@@ -185,7 +191,7 @@ constexpr int hamming_distance(const T& x, const T& y) noexcept
 	int diff = 0;
 	for(int i = 0; i < sizeof(T) * BIT_SIZE; ++i)
 		if ((x & (1 << i)) != (y & (1 << i))) diff++;
-		
+
 	return diff;
 }
 
@@ -193,37 +199,35 @@ constexpr int hamming_distance(const T& x, const T& y) noexcept
 template <typename T = uint64_t>
 class Bits;
 
-/* When I have time
- * I would like to create a bigger class that can be used on other systems
- *
-template <typename T = uint64_t>
-constexpr std::ostream& operator<<(std::ostream& left, Bits<T>& right);
+#ifdef BITTLE_STANDARD
 
-template <typename T = uint64_t>
-constexpr std::istream& operator>>(std::istream&, Bits<T>& right);
- *
- */
+	template <typename T = uint64_t>
+	constexpr std::ostream& operator<<(std::ostream& left, Bits<T>& right);
+
+	template <typename T = uint64_t>
+	constexpr std::istream& operator>>(std::istream&, Bits<T>& right);
+
+#endif
 
 /* Friend operators Defined above */
 
 template <typename T>
 class Bits
 {
-    
-	using value_type = T;
+
 	using ReduceOperator = std::function<T(T , T)>;
-	
+
 
 	/* The type must be integral and not a character type */
-	static_assert(std::is_integral<T>::value, 
+	static_assert(std::is_integral<T>::value,
 	                "Template type T must be an integral type in class Bits");
 
-					
+
 	public:
-		
+
 		/*  One param ctor */
 		explicit constexpr Bits(const T& k) noexcept : number(k) {}
-		
+
 		/*  ctor for an addrress of things */
 		template <typename F>
 		constexpr Bits(const F* ptr, const std::size_t& len) noexcept
@@ -231,19 +235,19 @@ class Bits
 			for(int i = 0; i < len; i++)
 				this->number |= (ptr[i] << (tsize - i - 1));
 		}
-	
+
 		/* Copy Ctor */
 		template <typename G = uint64_t>
 		constexpr Bits(const Bits<G>& right) noexcept
 		{
-		    this->number = static_cast<value_type>(right.value());
+		    this->number = static_cast<T>(right.value());
 		}
 
 		/* Move ctor */
 		template <typename G = uint64_t>
 		constexpr Bits(Bits<G>&& right) noexcept
 		{
-		    this->number = static_cast<value_type>(right.value());
+		    this->number = static_cast<T>(right.value());
 		}
 
 		/* Copy operator= */
@@ -253,7 +257,7 @@ class Bits
 		    if(reinterpret_cast<Bits*>(this) == reinterpret_cast<Bits*>(&right))
 		        return *this;
 
-		    this->number = static_cast<value_type>(right.value());
+		    this->number = static_cast<T>(right.value());
 		    return *this;
 		}
 
@@ -264,51 +268,51 @@ class Bits
 		    if(reinterpret_cast<Bits*>(this) == reinterpret_cast<Bits*>(&right))
 		        return *this;
 
-		    this->number = static_cast<value_type>(right.value());
+		    this->number = static_cast<T>(right.value());
 		    return *this;
 		}
-		
+
 
 		/* dtor */
 		~Bits() = default;
 
-		/* 
-		 * 
-		 * 
+		/*
+		 *
+		 *
 		 * Member Methods
-		 *  
-		 * 
+		 *
+		 *
 		 */
-		
-		/* 
-		 * 
-		 * 
+
+		/*
+		 *
+		 *
 		 * Non-Mutators
-		 *  
-		 * 
+		 *
+		 *
 		 */
-		
+
 		/* name: value
 		 * desc: gets value
 		 * returns: value
 		 */
-		constexpr value_type value() const noexcept
+		constexpr T value() const noexcept
 		{
 			return this->number;
 		}
-		
-		constexpr value_type bits() const noexcept
+
+		constexpr T bits() const noexcept
 		{
 			return this->tsize;
 		}
-		
+
 		/* name: hammingDistance
 		 * desc: finds number of different bits
 		 * returns: number of different bits
 		 */
 		constexpr int hammingDistance(const Bits& right) noexcept
 		{
-			return bittle::hamming_distance<value_type>(this->number, right.number);
+			return bittle::hamming_distance<T>(this->number, right.number);
 		}
 
 		/* name: hammingDistance
@@ -317,53 +321,53 @@ class Bits
 		 */
 		constexpr int hammingDistance(const T& right) noexcept
 		{
-			return bittle::hamming_distance<value_type>(this->number, right);
+			return bittle::hamming_distance<T>(this->number, right);
 		}
 
-		/* Maybe in another version of this class 
-		 *
-		 *
-		 * name: toString
-		 * desc: creates a string version of the number from bits
-		 * returns: bit string
-		 *
-		constexpr std::string toString() const noexcept
-		{
-			std::string temp;
-            for(int i = size - 1; i >= 0; --i)
-            {
-                temp.append(std::to_string((this->number >> i) & 1));
-            }
+		 #ifdef BITTLE_STANDARD
 
-            return temp;
-		}
-
-		 * name: toStringReverse
-		 * desc: creates a string version of the number from bits in reverse
-		 * returns: bit string
-		 *
-		constexpr std::string toStringReverse() const noexcept
-		{
+			/*
+			 * name: toString
+			 * desc: creates a string version of the number from bits
+			 * returns: bit string
+			 */
+			constexpr std::string toString() const noexcept
+			{
 				std::string temp;
-				for(int i = 0; i < size; ++i)
-				{
-					temp.append(std::to_string((this->number >> i) & 1));
-				}
+	            for(int i = size - 1; i >= 0; --i)
+	            {
+	                temp.append(std::to_string((this->number >> i) & 1));
+	            }
 
-				return temp;
-		}
-		*
-		*
-		*/
-		
-		
+	            return temp;
+			}
+
+			/*
+			 * name: toStringReverse
+			 * desc: creates a string version of the number from bits in reverse
+			 * returns: bit string
+			 */
+			constexpr std::string toStringReverse() const noexcept
+			{
+					std::string temp;
+					for(int i = 0; i < size; ++i)
+					{
+						temp.append(std::to_string((this->number >> i) & 1));
+					}
+
+					return temp;
+			}
+
+		#endif
+
+
 		/* name: ones
 		 * desc: counts the one bits
 		 * returns: number of one bits
 		 */
 		constexpr uint32_t ones() const noexcept
 		{
-			return bittle::count_ones<value_type>(this->number);
+			return bittle::count_ones<T>(this->number);
 		}
 
 		/* name: zeroes
@@ -372,7 +376,7 @@ class Bits
 		 */
 		constexpr uint32_t zeroes() const noexcept
 		{
-			return bittle::count_zeroes<value_type>(this->number);
+			return bittle::count_zeroes<T>(this->number);
 		}
 
 		/* name: checkBit
@@ -381,17 +385,17 @@ class Bits
 		 */
 		constexpr bool checkBit(const T& n) const noexcept
 		{
-			return bittle::check_bit<value_type>(this->number, n) != 0 ? true : false;
+			return bittle::check_bit<T>(this->number, n) != 0 ? true : false;
 		}
-		
-		/* 
-		 * 
-		 * 
+
+		/*
+		 *
+		 *
 		 * Mutators
-		 *  
-		 * 
+		 *
+		 *
 		 */
-		
+
 		/* name: setValue
 		 * desc: set the current value
 		 * returns: *this
@@ -401,14 +405,14 @@ class Bits
 		    this->number = n;
 		    return *this;
 		}
-		
+
 		/* name: reverseBits
 		 * desc: reverse the bits
 		 * returns: *this
 		 */
 		constexpr Bits& reverseBits() noexcept
 		{
-			this->number = bittle::reverse_bits<value_type>(this->number);
+			this->number = bittle::reverse_bits<T>(this->number);
 			return *this;
 		}
 
@@ -418,7 +422,7 @@ class Bits
 		 */
 		constexpr Bits& reverseBytes() noexcept
 		{
-			this->number = bittle::reverse_bytes<value_type>(this->number);
+			this->number = bittle::reverse_bytes<T>(this->number);
 			return *this;
 		}
 
@@ -428,7 +432,7 @@ class Bits
 		 */
 		constexpr Bits& toggleBit(const T& n) noexcept
 		{
-			this->number = bittle::toggle_bit<value_type>(this->number, n);
+			this->number = bittle::toggle_bit<T>(this->number, n);
 			return *this;
 		}
 
@@ -438,7 +442,7 @@ class Bits
 		 */
 		constexpr Bits& setBit(const T& n) noexcept
 		{
-			this->number = bittle::set_bit<value_type>(this->number, n);
+			this->number = bittle::set_bit<T>(this->number, n);
 			return *this;
 		}
 
@@ -448,17 +452,17 @@ class Bits
 		 */
 		constexpr Bits& clearBit(const T& n) noexcept
 		{
-			this->number = bittle::clear_bit<value_type>(this->number, n);
+			this->number = bittle::clear_bit<T>(this->number, n);
 			return *this;
 		}
-		
+
 		/* name: flipBit
 		 * desc: flips the bit at n, 0 -> 1 ,1 -> 0
 		 * returns *this
 		 */
 		 constexpr Bits& flipBit(const T& n) noexcept
 		 {
-			 this->number = bittle::flip_bit<value_type>(this->number, n);
+			 this->number = bittle::flip_bit<T>(this->number, n);
 			 return *this;
 		 }
 
@@ -471,7 +475,7 @@ class Bits
 			this->number *= -1;
 			return *this;
 		}
-		
+
 		/* name: clear
 		 * desc: sets internal number to 0
 		 * returns: *this
@@ -521,7 +525,7 @@ class Bits
 			this->number /= num;
 			return *this;
 		}
-		
+
 		/* name: mod
 		 * desc: modulo on num
 		 * returns: *this
@@ -531,8 +535,8 @@ class Bits
 			this->number %= num;
 			return *this;
 		}
-		
-		
+
+
 		/* name: invert
 		 * desc: inverts bits
 		 * returns: *this
@@ -570,9 +574,10 @@ class Bits
 			Relational Ops
 		*/
 
-		/* Stream insertion operators */
-		// friend std::ostream& operator<< <T> (std::ostream& left, Bits<T>& right);
-		// friend std::istream& operator>> <T> (std::istream&, Bits<T>& right);
+		#ifdef BITTLE_STANDARD
+			friend std::ostream& operator<< <T> (std::ostream& left, Bits<T>& right);
+			friend std::istream& operator>> <T> (std::istream&, Bits<T>& right);
+		#endif
 
 		/* Arithmitic and bit operators */
 		template <typename G, typename F, typename C>
@@ -595,7 +600,7 @@ class Bits
 
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator| (const Bits<G>& left, const Bits<F>& right);
-		
+
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator^ (const Bits<G>& left, const Bits<F>& right);
 
@@ -604,7 +609,7 @@ class Bits
 
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator>> (const Bits<G>& left, const Bits<F>& right);
-		
+
 		/*
 		 * Declartions only so far
 		 *
@@ -628,7 +633,7 @@ class Bits
 
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator| (const Bits<G>& left, const F& right);
-		
+
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator^ (const Bits<G>& left, const F& right);
 
@@ -637,7 +642,7 @@ class Bits
 
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator>> (const Bits<G>& left, const F& right);
-		
+
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator+ (const F& left, const Bits<F>& right);
 
@@ -658,7 +663,7 @@ class Bits
 
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator| (const F& left, const Bits<F>& right);
-		
+
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator^ (const F& left, const Bits<F>& right);
 
@@ -667,13 +672,13 @@ class Bits
 
 		template <typename G, typename F, typename C>
 		constexpr friend Bits<C> operator>> (const F& left, const Bits<F>& right);
-		
+
 		*
 		*
 		*/
-		
-		
-		
+
+
+
 		/* Relational Operators */
 		template <typename G, typename F>
 	    constexpr friend bool operator== (const Bits<G>& left, const Bits<F>& right);
@@ -692,7 +697,7 @@ class Bits
 
 		template <typename G, typename F>
 		constexpr friend bool operator<= (const Bits<G>& left, const Bits<F>& right);
-		
+
 		/*
 		 * Declartions only so far
 		 *
@@ -713,7 +718,7 @@ class Bits
 
 		template <typename G, typename F>
 		constexpr friend bool operator<= (const Bits<G>& left, const F& right);
-		
+
 		template <typename G, typename F>
 	    constexpr friend bool operator== (const F& left, const Bits<G>& right);
 
@@ -734,15 +739,15 @@ class Bits
 		*
 		*
 		*/
-		
-		
+
+
 		/* Logical Operators */
 		template <typename G, typename F>
 		constexpr friend bool operator&& (const Bits<G>& left, const Bits<F>& right);
 
 		template <typename G, typename F>
 		constexpr friend bool operator|| (const Bits<G>& left, const Bits<F>& right);
-		
+
 		/*
 		 * Declartions only so far
 		 *
@@ -751,7 +756,7 @@ class Bits
 
 		template <typename G, typename F>
 		constexpr friend bool operator||(const Bits<G>& left, const F& right);
-		
+
 		template <typename G, typename F>
 		constexpr friend bool operator&&(const F& left, const Bits<G>& right);
 
@@ -760,12 +765,12 @@ class Bits
 		*
 		*
 		*/
-		
-		
+
+
 		/* Invert the bits */
 		template<typename G>
 		constexpr friend Bits<G> operator~ (const Bits<G>& right);
-		
+
 		/* Preincrement */
 		constexpr Bits& operator++() noexcept
 		{
@@ -798,57 +803,57 @@ class Bits
 
 		}
 
-		/* Conversion Operators */ 
-		
+		/* Conversion Operators */
+
 		/* Bool operator */
 		explicit operator bool() noexcept
 		{
 			return this-> number != 0 ? true : false;
 		}
-		
+
 		/* Unsigned Versions */
 		explicit operator uint64_t() noexcept
 		{
 			return static_cast<uint64_t>(this->number);
 		}
-		
+
 		explicit operator uint32_t() noexcept
 		{
 			return static_cast<uint32_t>(this->number);
 		}
-		
+
 		explicit operator uint16_t() noexcept
 		{
 			return static_cast<uint16_t>(this->number);
 		}
-		
+
 		explicit operator uint8_t() noexcept
 		{
 			return static_cast<uint8_t>(this->number);
 		}
-		
+
 		/* Signed versions */
-		
+
 		explicit operator int64_t() noexcept
 		{
 			return static_cast<int64_t>(this->number);
 		}
-		
+
 		explicit operator int32_t() noexcept
 		{
 			return static_cast<int32_t>(this->number);
 		}
-		
+
 		explicit operator int16_t() noexcept
 		{
 			return static_cast<int16_t>(this->number);
 		}
-		
+
 		explicit operator int8_t() noexcept
 		{
 			return static_cast<int8_t>(this->number);
 		}
-		
+
 
 		/* Self Arithmitic Changing Operators */
 		Bits& operator*=(const T& n) noexcept
@@ -880,37 +885,37 @@ class Bits
 			this->number %= n;
 			return *this;
 		}
-		
+
 		Bits& operator<<=(const T& n) noexcept
 		{
-			this->number <<= n; 
+			this->number <<= n;
 			return *this;
 		}
-		
+
 		Bits& operator>>=(const T& n) noexcept
 		{
-			this->number >>= n; 
+			this->number >>= n;
 			return *this;
 		}
-		
+
 		Bits& operator|=(const T& n) noexcept
 		{
-			this->number |= n; 
+			this->number |= n;
 			return *this;
 		}
-		
+
 		Bits& operator&=(const T& n) noexcept
 		{
-			this->number &= n; 
+			this->number &= n;
 			return *this;
 		}
-		
+
 		Bits& operator^= (const T& n) noexcept
 		{
-			this->number ^= n.value(); 
+			this->number ^= n.value();
 			return *this;
 		}
-		
+
 
 		Bits& operator*=(const Bits& n) noexcept
 		{
@@ -941,37 +946,37 @@ class Bits
 			this->number %= n.value();
 			return *this;
 		}
-		
+
 		Bits& operator<<=(const Bits& n) noexcept
 		{
-			this->number <<= n.value(); 
+			this->number <<= n.value();
 			return *this;
 		}
-		
+
 		Bits& operator>>=(const Bits& n) noexcept
 		{
-			this->number >>= n.value(); 
+			this->number >>= n.value();
 			return *this;
 		}
-		
+
 		Bits& operator|=(const Bits& n) noexcept
 		{
-			this->number |= n.value(); 
+			this->number |= n.value();
 			return *this;
 		}
-		
+
 		Bits& operator&=(const Bits& n) noexcept
 		{
-			this->number &= n.value(); 
+			this->number &= n.value();
 			return *this;
 		}
-		
+
 		Bits& operator^= (const Bits& n) noexcept
 		{
-			this->number ^= n.value(); 
+			this->number ^= n.value();
 			return *this;
 		}
-		
+
 		/* Logical Operators */
 		bool operator!() const noexcept
 		{
@@ -982,24 +987,24 @@ class Bits
 
 		int8_t& operator[](std::size_t idx) noexcept
 		{
-			if (idx >= 0 && idx < sizeof(value_type))
+			if (idx >= 0 && idx < sizeof(T))
 				return *(reinterpret_cast<int8_t*>(&(this->number)) + idx);
 			else
 				return *reinterpret_cast<int8_t*>(&(this->number));
 		}
-		
-		
+
+
 		/* Assignment Methods */
-		
-		/* name: insertRight 
-         * desc: pushes bits in on the right side of the digit 
-         * returns: *this 
+
+		/* name: insertRight
+         * desc: pushes bits in on the right side of the digit
+         * returns: *this
         */
 		template <typename F>
 		constexpr Bits& insertRight(F k) noexcept
 		{
 		   static_assert(std::is_integral<F>::value, "The type T must be integral");
-			
+
 			if (k != 0)
 	        {
 				*this <<= 1;
@@ -1009,13 +1014,13 @@ class Bits
 	        {
 				*this <<= 1;
 	        }
-	        return *this;      
+	        return *this;
 		}
-		
 
-		/* name: insertRight 
-         * desc: pushes bits in on the right side of the digit 
-         * returns: *this 
+
+		/* name: insertRight
+         * desc: pushes bits in on the right side of the digit
+         * returns: *this
         */
 		template <typename F, typename... Fs>
 		constexpr Bits& insertRight(F k, Fs... bits) noexcept
@@ -1023,7 +1028,7 @@ class Bits
 		    static_assert(std::is_integral<F>::value, "The type T must be integral");
 		    constexpr int sz = sizeof(T) * 8;
 		    static_assert(sizeof...(Fs) <= sz, "Bits exceed maximum amount");
-		    
+
 			if (k != 0)
 	        {
 				*this <<= 1;
@@ -1033,33 +1038,33 @@ class Bits
 	        {
 				*this <<= 1;
 	        }
-			
-	        
+
+
 	        return insertRight(bits...);
 		}
-		
-		
-		/* name: insertLeft 
-         * desc: pushes bits in on the left side of the digit 
-         * returns: *this 
+
+
+		/* name: insertLeft
+         * desc: pushes bits in on the left side of the digit
+         * returns: *this
         */
 		template <typename F>
 		constexpr Bits& insertLeft(F k) noexcept
 		{
 		   static_assert(std::is_integral<F>::value, "The type T must be integral");
-		    
+
 	        if (k != 0 && tsize > 0)
 				this->setBit(tsize--);
 	        else
 	           this->clearBit(tsize--);
-	           
-	        tsize = sizeof(T) * 8;   
-			return *this;    
+
+	        tsize = sizeof(T) * 8;
+			return *this;
 		}
-		
-		/* name: insertLeft 
-         * desc: pushes bits in on the left side of the digit 
-         * returns: *this 
+
+		/* name: insertLeft
+         * desc: pushes bits in on the left side of the digit
+         * returns: *this
         */
 		template <typename F, typename... Fs>
 		constexpr Bits& insertLeft(F k, Fs... bits) noexcept
@@ -1067,45 +1072,45 @@ class Bits
 		    static_assert(std::is_integral<F>::value, "The type T must be integral");
 		    constexpr int sz = sizeof(T) * 8;
 		    static_assert(sizeof...(Fs) <= sz, "Bits exceed maximum amount");
-		    
+
 	        if (k != 0 && tsize > 0)
 				this->setBit(tsize--);
 	        else
 	           this->clearBit(tsize--);
-	            
+
 	        return insertLeft(bits...);
 		}
-		
-		/* name: assign 
-         * desc: assigns new bits to current value, overwriting completley 
-         * returns: *this 
+
+		/* name: assign
+         * desc: assigns new bits to current value, overwriting completley
+         * returns: *this
         */
 		template <typename F>
 		constexpr Bits& assign(F k) noexcept
 		{
 		   static_assert(std::is_integral<F>::value, "The type T must be integral");
-		   
-		    
+
+
 	     	if (k != 0)
 				this->setBit(1);
 	        else
 				this->clearBit(1);
-			
-			return *this;      
+
+			return *this;
 		}
-		
-		/* name: assign 
-         * desc: assigns new bits to current value, overwriting completley 
-         * returns: *this 
+
+		/* name: assign
+         * desc: assigns new bits to current value, overwriting completley
+         * returns: *this
         */
 		template <typename F, typename... Fs>
 		constexpr Bits& assign(F k, Fs... bits) noexcept
 		{
 		    static_assert(std::is_integral<F>::value  , "The type T must be integral");
-		    
+
 		    constexpr int sz = sizeof(T) * 8;
 		    static_assert(sizeof...(Fs) <= sz, "Bits exceed maximum amount");
-		    
+
 			if (k != 0)
 	        {
 				this->setBit(1);
@@ -1116,16 +1121,16 @@ class Bits
 				*this <<= 1;
 				this->clearBit(1);
 	        }
-	        
+
 	        return assign(bits...);
 		}
-		
+
 		/* Functional Methods */
-		
-		
+
+
 		/* name: reduce
 		 * desc: reduces the bits using an operator
-		 * Returns: a value reduced 
+		 * Returns: a value reduced
 		 */
 		T reduce(ReduceOperator func, T init) const
 		{
@@ -1133,19 +1138,19 @@ class Bits
 			T n = this->number;
 			for(int i = 0; i <  tsize - 1; i+=2)
 				val += func((n >> i) & 1, (n >> (i + 1)) & 1);
-			
+
 			return val;
 		}
-        
-  
-		/* 
-		 * 
-		 * 
+
+
+		/*
+		 *
+		 *
 		 * Static Member Methods
-		 *  
-		 * 
+		 *
+		 *
 		 */
-		 
+
 		static constexpr bool isLittleEndian() noexcept
 		{
 			uint16_t i = 1;
@@ -1163,7 +1168,7 @@ class Bits
 			else
 				return true;
 		}
-		
+
 		template <typename F = uint64_t>
 		static constexpr Bits build(F n)
 		{
@@ -1177,30 +1182,28 @@ class Bits
 
 };
 
-/* In progress
- * 
- *
-template <typename T>
-constexpr std::ostream& operator<<(std::ostream& left, Bits<T>& right)
-{
-	left << "Decimal: " <<  std::dec << right.number
-			<< "\nBinary: " <<  right.toString()
-			<< "\nHex: " <<  std::hex << right.number
-			<< "\nOctal: " <<  std::oct << right.number
-			<< "\n\n";
+#ifdef BITTLE_STANDARD
 
-	return left;
-}
+	template <typename T>
+	constexpr std::ostream& operator<<(std::ostream& left, Bits<T>& right)
+	{
+		left << "Decimal: " <<  std::dec << right.number
+				<< "\nBinary: " <<  right.toString()
+				<< "\nHex: " <<  std::hex << right.number
+				<< "\nOctal: " <<  std::oct << right.number
+				<< "\n\n";
 
-template <typename T>
-constexpr std::istream& operator>>(std::istream& left, Bits<T>& right)
-{
-	left >> right.number;
-	return left;
-}
-*
-*
-*/
+		return left;
+	}
+
+	template <typename T>
+	constexpr std::istream& operator>>(std::istream& left, Bits<T>& right)
+	{
+		left >> right.number;
+		return left;
+	}
+
+#endif
 
 template <typename G = uint64_t, typename F = uint64_t, typename C = uint64_t>
 constexpr Bits<C> operator+(const Bits<G>& left, const Bits<F>& right)
