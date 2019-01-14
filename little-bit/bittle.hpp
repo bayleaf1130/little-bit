@@ -12,10 +12,10 @@
 
 
 #ifdef BITTLE_STANDARD
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <utility>
+	#include <iostream>
+	#include <string>
+	#include <iomanip>
+	#include <utility>
 #endif
 
 // Must include
@@ -41,7 +41,7 @@ namespace bittle {
 	* Invert every other bit method
 	* Grab rightNBits as a Bits object method
 	* Grab leftNBits as a Bits object methods
-	* Make it iterable so the STL works on it?
+	* Make it iterable so the STL works on it but make it optional?
 	*/
 
 static constexpr int BIT_SIZE = 8;
@@ -195,6 +195,34 @@ constexpr int hamming_distance(const T& x, const T& y) noexcept
 	return diff;
 }
 
+/* name: right_bits
+ * desc: grabs the n right bits
+ * returns: the new numbers
+ */
+ template <typename T = uint64_t>
+ constexpr T right_bits(const T& num, const int num_bits)
+ {
+	 T ret = 0;
+	 T temp = 0;
+	 for(int i = 0; i < num_bits; i++)
+	 {
+		 temp = (num >> i) & 1;
+		 ret |= temp << i;
+	 }
+
+	 return ret;
+ }
+
+
+ /* name: left_bits
+  * desc: grabs the n left bits
+  * returns: the new numbers
+  */
+  template <typename T = uint64_t>
+  constexpr T left_bits(const T& num, const int num_bits)
+  {
+ 	 return num >> (sizeof(T) * BIT_SIZE) - num_bits - 1;
+  }
 
 template <typename T = uint64_t>
 class Bits;
@@ -465,6 +493,24 @@ class Bits
 			 this->number = bittle::flip_bit<T>(this->number, n);
 			 return *this;
 		 }
+
+		 /* name: rightBits
+			* desc: retrieves new Bits Object of bits
+			* returns new Bits
+			*/
+			constexpr Bits& rightBits(const T& n) noexcept
+			{
+				return Bits(right_bits<T>(this->number));
+			}
+
+			/* name: leftBits
+ 			* desc: retrieves new Bits Object of bits
+ 			* returns new Bits
+ 			*/
+ 			constexpr Bits& leftBits(const T& n) noexcept
+ 			{
+ 				return Bits(left_bits<T>(this->number));
+ 			}
 
 		/* name: negate
 		 * desc: negate the number
