@@ -8,7 +8,7 @@
 
 
 
-#define BITTLE_STANDARD
+
 
 #include "bittle.hpp"
 #include <cstdlib>

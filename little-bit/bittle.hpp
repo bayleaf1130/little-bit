@@ -221,7 +221,7 @@ constexpr int hamming_distance(const T& x, const T& y) noexcept
   template <typename T = uint64_t>
   constexpr T left_bits(const T& num, const int num_bits)
   {
- 	 return num >> (sizeof(T) * BIT_SIZE) - num_bits - 1;
+ 	 return num >> ((sizeof(T) * BIT_SIZE) - num_bits - 1);
   }
 
 template <typename T = uint64_t>
@@ -359,10 +359,10 @@ class Bits
 			 * desc: creates a string version of the number from bits
 			 * returns: bit string
 			 */
-			constexpr std::string toString() const noexcept
+			std::string toString() const noexcept
 			{
-				std::string temp;
-	            for(int i = size - 1; i >= 0; --i)
+							std::string temp;
+	            for(int i = tsize - 1; i >= 0; --i)
 	            {
 	                temp.append(std::to_string((this->number >> i) & 1));
 	            }
@@ -375,10 +375,10 @@ class Bits
 			 * desc: creates a string version of the number from bits in reverse
 			 * returns: bit string
 			 */
-			constexpr std::string toStringReverse() const noexcept
+			std::string toStringReverse() const noexcept
 			{
 					std::string temp;
-					for(int i = 0; i < size; ++i)
+					for(int i = 0; i < tsize; ++i)
 					{
 						temp.append(std::to_string((this->number >> i) & 1));
 					}
