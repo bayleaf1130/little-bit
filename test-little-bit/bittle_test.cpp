@@ -10,7 +10,7 @@
 
 #define BITTLE_STANDARD
 
-#include "bittle_test.hpp"
+#include "bittle.hpp"
 #include <cstdlib>
 
 
