@@ -2,7 +2,7 @@
 C++ 14 compile time and stack based bit library... </br>
 <h4>Details:</h4> </br>
   1. Implemented using new C++ 11/14 features like constexpr and variadic templates </br>
-  2. Completely templated for integral types especially standard types <cstdint> *cough* </br>
+  2. Completely templated for integral types especially standard types 'cstdint' *cough* </br>
   3. Provides a complete set of bitwise procedural routines </br>
   4. 'Bits' class allows extreme manipulation and fine tuning of integral types in the bit form </br>
   5. Everything is included in the header files. No extra linking needed. </br>
@@ -23,7 +23,7 @@ C++ 14 compile time and stack based bit library... </br>
 </br></br>
 <h4>Thoughts:</h4></br>
 <p>
-'little-bit' is my first library attempt, and I know its a bit daunting especially in C++ but I wanted to try it.
+'little-bit' is my first library attempt, and I know it is a bit daunting especially in C++ but I wanted to try it.
  I would appreciate any help or comments given to help me improve my library or 'attempt' at it. Any ideas or requests? Let me     know!
 </p>  
 </br></br>
