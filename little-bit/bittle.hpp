@@ -227,15 +227,6 @@ constexpr int hamming_distance(const T& x, const T& y) noexcept
 template <typename T = uint64_t>
 class Bits;
 
-#ifdef BITTLE_STANDARD
-
-	template <typename T = uint64_t>
-	constexpr std::ostream& operator<<(std::ostream& left, Bits<T>& right);
-
-	template <typename T = uint64_t>
-	constexpr std::istream& operator>>(std::istream&, Bits<T>& right);
-
-#endif
 
 /* Friend operators Defined above */
 
@@ -619,11 +610,6 @@ class Bits
 			Bitwise ops,
 			Relational Ops
 		*/
-
-		#ifdef BITTLE_STANDARD
-			friend std::ostream& operator<< <T> (std::ostream& left, Bits<T>& right);
-			friend std::istream& operator>> <T> (std::istream&, Bits<T>& right);
-		#endif
 
 		/* Arithmitic and bit operators */
 		template <typename G, typename F, typename C>
@@ -1228,28 +1214,6 @@ class Bits
 
 };
 
-#ifdef BITTLE_STANDARD
-
-	template <typename T>
-	constexpr std::ostream& operator<<(std::ostream& left, Bits<T>& right)
-	{
-		left << "Decimal: " <<  std::dec << right.number
-				<< "\nBinary: " <<  right.toString()
-				<< "\nHex: " <<  std::hex << right.number
-				<< "\nOctal: " <<  std::oct << right.number
-				<< "\n\n";
-
-		return left;
-	}
-
-	template <typename T>
-	constexpr std::istream& operator>>(std::istream& left, Bits<T>& right)
-	{
-		left >> right.number;
-		return left;
-	}
-
-#endif
 
 template <typename G = uint64_t, typename F = uint64_t, typename C = uint64_t>
 constexpr Bits<C> operator+(const Bits<G>& left, const Bits<F>& right)
